@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">AzubiMark</string>
+    <string name="browse_files">Browse Files</string>
+    <string name="about">About</string>
+    <string name="theme">Change Theme</string>
+    <string name="open_file">Open File</string>
+    <string name="no_markdown_files">No Markdown files found in this directory</string>
+    <string name="file_icon">File icon</string>
+    <string name="about_description">AzubiMark is a modern Markdown viewer with Material You design principles.</string>
+    <string name="developed_by">Developed by Kelexine</string>
+    <string name="view_on_github">View on GitHub</string>
+</resources>
