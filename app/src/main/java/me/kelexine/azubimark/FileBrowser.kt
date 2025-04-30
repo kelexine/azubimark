@@ -149,6 +149,7 @@ class FileBrowser : AppCompatActivity() {
                         try {
                             val content = file.readText()
                             val intent = Intent(this@FileBrowser, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             intent.putExtra("MARKDOWN_CONTENT", content)
                             intent.putExtra("FILE_NAME", file.name)
                             startActivity(intent)

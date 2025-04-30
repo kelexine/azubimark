@@ -55,39 +55,66 @@ class MainActivity : AppCompatActivity() {
         markdownViewer = MarkdownViewer(this, binding.markdownContent)
         
         // Set up FAB for file browser
-        findViewById<FloatingActionButton>(R.id.fab_browse).setOnClickListener {
+        findViewById<FloatingActionButton>(R.id.fab_browse)?.setOnClickListener {
             openFileBrowser()
         }
         
         // Handle intent if app was opened with a file
         handleIntent(intent)
+        
+        // Check for extras from FileBrowser
+        checkForMarkdownContent()
     }
     
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent) // Update the stored intent
         handleIntent(intent)
+        checkForMarkdownContent()
+    }
+    
+    private fun checkForMarkdownContent() {
+        try {
+            val markdownContent = intent.getStringExtra("MARKDOWN_CONTENT")
+            val fileName = intent.getStringExtra("FILE_NAME")
+            
+            if (markdownContent != null) {
+                markdownViewer.setMarkdownContent(markdownContent)
+                supportActionBar?.subtitle = fileName
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error loading markdown: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
     
     private fun handleIntent(intent: Intent) {
-        when (intent.action) {
-            Intent.ACTION_VIEW -> {
-                intent.data?.let { uri ->
-                    try {
-                        contentResolver.openInputStream(uri)?.use { inputStream ->
-                            val content = inputStream.bufferedReader().use { it.readText() }
-                            markdownViewer.setMarkdownContent(content)
+        try {
+            when (intent.action) {
+                Intent.ACTION_VIEW -> {
+                    intent.data?.let { uri ->
+                        try {
+                            contentResolver.openInputStream(uri)?.use { inputStream ->
+                                val content = inputStream.bufferedReader().use { it.readText() }
+                                markdownViewer.setMarkdownContent(content)
+                            }
+                        } catch (e: IOException) {
+                            Toast.makeText(this, "Failed to open file: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
-                    } catch (e: IOException) {
-                        Toast.makeText(this, "Failed to open file: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error handling intent: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
     
     private fun openFileBrowser() {
-        val intent = Intent(this, FileBrowser::class.java)
-        startActivity(intent)
+        try {
+            val intent = Intent(this, FileBrowser::class.java)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error opening file browser: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
     
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -114,7 +141,7 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun showThemeChooser() {
-        val themes = arrayOf("Light", "Dark", "Material You (Dynamic)")
+        val themes = arrayOf("System", "Light", "Dark", "Material You (Dynamic)")
         MaterialAlertDialogBuilder(this)
             .setTitle("Choose Theme")
             .setSingleChoiceItems(themes, themeManager.getCurrentTheme()) { dialog, which ->

@@ -31,7 +31,7 @@ class AboutActivity : AppCompatActivity() {
         
         // Set up GitHub link
         binding.githubButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/kelexine"))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/azubiorg/azubimark"))
             startActivity(intent)
         }
     }

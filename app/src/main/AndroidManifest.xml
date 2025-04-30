@@ -30,6 +30,11 @@
         </activity>
 
         <activity
+            android:name=".FileBrowser"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
