@@ -22,10 +22,10 @@ android {
         create("release") {
             // It's safer to read from environment variables in CI/CD pipelines,
             // falling back to project properties for local builds.
-            storeFile = file(System.getenv("MYAPP_RELEASE_STORE_FILE") ?: project.property("MYAPP_RELEASE_STORE_FILE") as String)
-            storePassword = System.getenv("MYAPP_RELEASE_STORE_PASSWORD") ?: project.property("MYAPP_RELEASE_STORE_PASSWORD") as String
-            keyAlias = System.getenv("MYAPP_RELEASE_KEY_ALIAS") ?: project.property("MYAPP_RELEASE_KEY_ALIAS") as String
-            keyPassword = System.getenv("MYAPP_RELEASE_KEY_PASSWORD") ?: project.property("MYAPP_RELEASE_KEY_PASSWORD") as String
+            storeFile = file(System.getenv("AZUBIMARK_RELEASE_STORE_FILE") ?: project.property("AZUBIMARK_RELEASE_STORE_FILE") as String)
+            storePassword = System.getenv("AZUBIMARK_RELEASE_STORE_PASSWORD") ?: project.property("AZUBIMARK_RELEASE_STORE_PASSWORD") as String
+            keyAlias = System.getenv("AZUBIMARK_RELEASE_KEY_ALIAS") ?: project.property("AZUBIMARK_RELEASE_KEY_ALIAS") as String
+            keyPassword = System.getenv("AZUBIMARK_RELEASE_KEY_PASSWORD") ?: project.property("AZUBIMARK_RELEASE_KEY_PASSWORD") as String
         }
     }
 
