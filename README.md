@@ -1,10 +1,10 @@
 # AzubiMark
 
-![GitHub repo size](https://img.shields.io/github/repo-size/kelexine/azubimark)
-![GitHub stars](https://img.shields.io/github/stars/kelexine/azubimark?style=social)
-![GitHub forks](https://img.shields.io/github/forks/kelexine/azubimark?style=social)
-![License](https://img.shields.io/github/license/kelexine/azubimark)
-![GitHub last commit](https://img.shields.io/github/last-commit/kelexine/azubimark)
+![GitHub repo size](https://img.shields.io/github/repo-size/azubiorg/azubimark)
+![GitHub stars](https://img.shields.io/github/stars/azubiorg/azubimark?style=social)
+![GitHub forks](https://img.shields.io/github/forks/azubiorg/azubimark?style=social)
+![LICENSE](https://img.shields.io/github/license/azubiorg/azubimark)
+![GitHub last commit](https://img.shields.io/github/last-commit/azubiorg/azubimark)
 ![Platform](https://img.shields.io/badge/platform-Android-green)
 ![Minimum SDK](https://img.shields.io/badge/minSDK-21-blue)
 
