@@ -12,8 +12,8 @@ android {
         applicationId = "me.kelexine.azubimark"
         minSdk = 21
         targetSdk = 34
-        versionCode = 111
-        versionName = "1.1.1"
+        versionCode = 121
+        versionName = "v1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
