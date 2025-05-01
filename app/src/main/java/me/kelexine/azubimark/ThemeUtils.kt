@@ -20,6 +20,21 @@ object ThemeUtils {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
     }
     
+    fun shouldUseLightStatusBar(context: Context): Boolean {
+    // Get the actual toolbar color from your theme
+    val typedValue = TypedValue()
+    context.theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+    val toolbarColor = typedValue.data
+    
+    // Calculate perceived brightness
+    val brightness = (Color.red(toolbarColor) * 299 + 
+                     Color.green(toolbarColor) * 587 + 
+                     Color.blue(toolbarColor) * 114) / 1000
+                     
+    // If the toolbar is light (brightness > 128), use dark icons
+    return brightness > 128
+    }
+    
     @ColorInt
     fun adjustBrightness(@ColorInt color: Int, factor: Float): Int {
         val r = (Color.red(color) * factor).toInt().coerceIn(0, 255)

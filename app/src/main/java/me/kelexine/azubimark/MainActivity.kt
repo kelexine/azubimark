@@ -5,6 +5,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -108,6 +112,31 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Error loading markdown: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
+    
+    private fun setupEdgeToEdgeDisplay() {
+    // Enable edge-to-edge display
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    
+    // Handle insets for toolbar
+    ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
+        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        
+        // Apply padding to the toolbar to avoid overlap with status bar
+        view.setPadding(
+            view.paddingLeft,
+            insets.top, // This ensures content starts below status bar
+            view.paddingRight,
+            view.paddingBottom
+        )
+        
+        WindowInsetsCompat.CONSUMED
+    }
+    
+    // Fix the status bar icon colors based on background
+    WindowInsetsControllerCompat(window, window.decorView).apply {
+        isAppearanceLightStatusBars = ThemeUtils.shouldUseLightStatusBar(this@MainActivity)
+    }
+}
     
     private fun handleIntent(intent: Intent) {
         try {
