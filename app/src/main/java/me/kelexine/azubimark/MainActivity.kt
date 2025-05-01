@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         
         // Set up toolbar
         setSupportActionBar(binding.toolbar)
-        
+        setupEdgeToEdgeDisplay()
         // Initialize markdown viewer
         markdownViewer = MarkdownViewer(this, binding.markdownContent)
         
