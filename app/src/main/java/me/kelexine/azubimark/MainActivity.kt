@@ -19,6 +19,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var markdownViewer: MarkdownViewer
     private lateinit var themeManager: ThemeManager
     
+    // Add this to store current markdown content
+    private var currentMarkdownContent: String? = null
+    
     private val openDocumentLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
@@ -27,6 +30,7 @@ class MainActivity : AppCompatActivity() {
                 contentResolver.openInputStream(uri)?.use { inputStream ->
                     val content = inputStream.bufferedReader().use { it.readText() }
                     markdownViewer.setMarkdownContent(content)
+                    currentMarkdownContent = content // Store the content
                 }
             } catch (e: IOException) {
                 Toast.makeText(this, "Failed to open file: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -59,11 +63,28 @@ class MainActivity : AppCompatActivity() {
             openFileBrowser()
         }
         
-        // Handle intent if app was opened with a file
-        handleIntent(intent)
-        
-        // Check for extras from FileBrowser
-        checkForMarkdownContent()
+        // Restore saved content if available
+        if (savedInstanceState != null && savedInstanceState.containsKey("SAVED_MARKDOWN_CONTENT")) {
+            val savedContent = savedInstanceState.getString("SAVED_MARKDOWN_CONTENT")
+            if (savedContent != null) {
+                markdownViewer.setMarkdownContent(savedContent)
+                currentMarkdownContent = savedContent
+            }
+        } else {
+            // Handle intent if app was opened with a file
+            handleIntent(intent)
+            
+            // Check for extras from FileBrowser
+            checkForMarkdownContent()
+        }
+    }
+    
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save the current markdown content
+        currentMarkdownContent?.let {
+            outState.putString("SAVED_MARKDOWN_CONTENT", it)
+        }
     }
     
     override fun onNewIntent(intent: Intent) {
@@ -80,6 +101,7 @@ class MainActivity : AppCompatActivity() {
             
             if (markdownContent != null) {
                 markdownViewer.setMarkdownContent(markdownContent)
+                currentMarkdownContent = markdownContent // Store the content
                 supportActionBar?.subtitle = fileName
             }
         } catch (e: Exception) {
@@ -96,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                             contentResolver.openInputStream(uri)?.use { inputStream ->
                                 val content = inputStream.bufferedReader().use { it.readText() }
                                 markdownViewer.setMarkdownContent(content)
+                                currentMarkdownContent = content // Store the content
                             }
                         } catch (e: IOException) {
                             Toast.makeText(this, "Failed to open file: ${e.message}", Toast.LENGTH_SHORT).show()
