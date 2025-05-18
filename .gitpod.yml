@@ -1,0 +1,41 @@
+image:
+  file: .gitpod.Dockerfile
+
+ports:
+  - port: 6080
+    onOpen: open-preview
+    visibility: public
+  - port: 5900
+    onOpen: ignore
+    visibility: public
+  - port: 8080
+    onOpen: open-browser
+    visibility: public
+
+tasks:
+  - name: Setup Android Environment
+    init: |
+      echo "Initializing Android Development Environment..."
+      # Accept Android SDK licenses
+      yes | sdkmanager --licenses
+      # Install Android SDK components
+      sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;27.1.12988734" "cmake;3.22.1"
+      # Configure Gradle
+      mkdir -p ~/.gradle
+      echo "org.gradle.daemon=true" >> ~/.gradle/gradle.properties
+      echo "org.gradle.parallel=true" >> ~/.gradle/gradle.properties
+      echo "org.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> ~/.gradle/gradle.properties
+      # Start VNC server and desktop environment
+      start-vnc-session.sh
+    command: |
+      echo "Android Development Environment Ready!"
+      echo "VNC server is running on port 6080 (browser) and 5900 (VNC client)"
+      echo "Connect via browser: $(gp url 6080)"
+      echo "Or use a VNC client with address: $(gp url 5900 | sed 's|https://||')"
+      
+vscode:
+  extensions:
+    - vscjava.vscode-java-pack
+    - vscjava.vscode-gradle
+    - redhat.java
+    - mathiasfrohlich.Kotlin
