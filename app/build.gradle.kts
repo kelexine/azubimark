@@ -10,18 +10,16 @@ android {
 
     defaultConfig {
         applicationId = "me.kelexine.azubimark"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 34
-        versionCode = 121
-        versionName = "v1.2.1"
+        versionCode = 122
+        versionName = "1.2.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs { // Add this signingConfigs block
+    signingConfigs {
         create("release") {
-            // It's safer to read from environment variables in CI/CD pipelines,
-            // falling back to project properties for local builds.
             storeFile = file(System.getenv("AZUBIMARK_RELEASE_STORE_FILE") ?: project.property("AZUBIMARK_RELEASE_STORE_FILE") as String)
             storePassword = System.getenv("AZUBIMARK_RELEASE_STORE_PASSWORD") ?: project.property("AZUBIMARK_RELEASE_STORE_PASSWORD") as String
             keyAlias = System.getenv("AZUBIMARK_RELEASE_KEY_ALIAS") ?: project.property("AZUBIMARK_RELEASE_KEY_ALIAS") as String
@@ -31,9 +29,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false // Set to true for code shrinking in release
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release") // Link release build type to signing config
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -58,6 +56,18 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    
+    // APK naming configuration
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val appName = "AzubiMark"
+            val version = variant.versionName
+            val buildType = variant.buildType.name
+            output.outputFileName = "${appName}-${version}-${buildType}.apk"
         }
     }
 }
