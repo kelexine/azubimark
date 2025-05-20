@@ -6,7 +6,7 @@
 ![LICENSE](https://img.shields.io/github/license/azubiorg/azubimark)
 ![GitHub last commit](https://img.shields.io/github/last-commit/azubiorg/azubimark)
 ![Platform](https://img.shields.io/badge/platform-Android-green)
-![Minimum SDK](https://img.shields.io/badge/minSDK-21-blue)
+![Minimum SDK](https://img.shields.io/badge/minSDK-26-blue)
 
 **AzubiMark** is a modern, Material You-themed Markdown viewer for Android. It supports syntax highlighting, dark/light/dynamic themes, and provides a rich, readable viewing experience for `.md` and `.markdown` files on mobile devices.
 
@@ -40,7 +40,7 @@ To build the app locally:
 
 ## Requirements
 
-- Android 5.0 (API 21) and above
+- Android 8.0 (API 26) and above
 - Kotlin 1.8+
 - Android Gradle Plugin 8.0+
 - Android Studio Flamingo or newer
