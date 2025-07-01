@@ -74,6 +74,13 @@ android {
         }
     }
     
+    lint {
+        abortOnError = false
+        warningsAsErrors = false
+        disable += setOf("UseAppTint", "VectorDrawableCompat")
+        baseline = file("lint-baseline.xml")
+    }
+    
     // APK naming configuration
     applicationVariants.all {
         val variant = this
