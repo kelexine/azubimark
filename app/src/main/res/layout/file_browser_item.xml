@@ -28,7 +28,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:contentDescription="@string/file_icon"
-            android:tint="?attr/colorOnSurfaceVariant"
+            app:tint="?attr/colorOnSurfaceVariant"
             tools:src="@drawable/ic_markdown" />
 
         <LinearLayout
