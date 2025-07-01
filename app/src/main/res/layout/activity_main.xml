@@ -12,15 +12,18 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        app:liftOnScroll="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorSurface"
+            android:elevation="0dp"
             app:title="@string/app_name"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+            app:titleTextAppearance="?attr/textAppearanceHeadlineSmall"
+            app:popupTheme="@style/ThemeOverlay.Material3.Light" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -28,16 +31,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="88dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/markdown_content"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textIsSelectable="true"
-            android:lineSpacingMultiplier="1.2"
-            android:textSize="16sp" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutlineVariant">
+
+            <TextView
+                android:id="@+id/markdown_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:textIsSelectable="true"
+                android:lineSpacingMultiplier="1.6"
+                android:textSize="16sp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                android:text="@string/welcome_message"
+                tools:text="Welcome to AzubiMark! Open a markdown file to get started." />
+
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.core.widget.NestedScrollView>
 
@@ -49,6 +72,9 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/browse_files"
-        app:srcCompat="@drawable/ic_browse" />
+        app:srcCompat="@drawable/ic_browse"
+        app:fabSize="normal"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

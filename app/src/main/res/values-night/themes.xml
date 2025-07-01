@@ -27,5 +27,16 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_dark_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_dark_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
+        
+        <!-- Typography -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.AzubiMark.DisplayLarge</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.AzubiMark.HeadlineSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.AzubiMark.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.AzubiMark.BodyMedium</item>
+        
+        <!-- Elevation and Shapes -->
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AzubiMark.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AzubiMark.MediumComponent</item>
     </style>
 </resources>
