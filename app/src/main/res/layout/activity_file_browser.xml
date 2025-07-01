@@ -8,14 +8,17 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:liftOnScroll="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+            android:background="?attr/colorSurface"
+            android:elevation="0dp"
+            app:titleTextAppearance="?attr/textAppearanceHeadlineSmall"
+            app:popupTheme="@style/ThemeOverlay.Material3.Light" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -29,16 +32,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:padding="8dp" />
+            android:padding="16dp" />
 
-        <TextView
+        <LinearLayout
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:gravity="center"
-            android:text="@string/no_markdown_files"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-            android:visibility="gone" />
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_folder"
+                android:alpha="0.6"
+                app:tint="?attr/colorOnSurfaceVariant" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_markdown_files"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:gravity="center" />
+
+        </LinearLayout>
 
     </FrameLayout>
 

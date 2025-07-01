@@ -28,7 +28,68 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
+        
+        <!-- Typography -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.AzubiMark.DisplayLarge</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.AzubiMark.HeadlineSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.AzubiMark.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.AzubiMark.BodyMedium</item>
+        
+        <!-- Elevation and Shapes -->
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AzubiMark.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AzubiMark.MediumComponent</item>
     </style>
 
     <style name="Theme.AzubiMark" parent="Base.Theme.AzubiMark" />
+    
+    <!-- Typography Styles -->
+    <style name="TextAppearance.AzubiMark.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+    </style>
+    
+    <style name="TextAppearance.AzubiMark.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+    </style>
+    
+    <style name="TextAppearance.AzubiMark.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineSpacingMultiplier">1.6</item>
+    </style>
+    
+    <style name="TextAppearance.AzubiMark.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+    
+    <!-- Shape Styles -->
+    <style name="ShapeAppearance.AzubiMark.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">12dp</item>
+    </style>
+    
+    <style name="ShapeAppearance.AzubiMark.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+    
+    <!-- Code Block Style -->
+    <style name="Widget.AzubiMark.CodeBlock" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
+    
+    <!-- Enhanced Button Styles -->
+    <style name="Widget.AzubiMark.Button.Copy" parent="Widget.Material3.Button.IconButton">
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="iconSize">24dp</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
 </resources>
