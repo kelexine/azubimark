@@ -42,7 +42,7 @@ To get started with AzubiMark, you can either build the app from the source or w
 
 1.  **Clone the repository**:
     ```bash
-    git clone [https://github.com/kelexine/azubimark.git](https://github.com/kelexine/azubimark.git)
+    git clone https://github.com/kelexine/azubimark.git
     ```
 2.  **Open in Android Studio**:
     - Launch Android Studio.
