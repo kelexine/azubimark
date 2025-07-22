@@ -228,5 +228,7 @@
         <item name="indicatorColor">?attr/colorPrimary</item>
         <item name="trackColor">?attr/colorSurfaceVariant</item>
         <item name="trackThickness">3dp</item>
+        <item name="indicatorCornerRadius">2dp</item>
+        <item name="trackCornerRadius">2dp</item>
     </style>
 </resources>
