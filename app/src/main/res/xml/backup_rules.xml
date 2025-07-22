@@ -15,7 +15,7 @@
     <include domain="sharedpref" path="." />
     
     <!-- Include cache directory for temporary files -->
-    <include domain="cache" path="." />
+    <!-- <include domain="cache" path="." /> Cache domain not supported in backup rules -->
     
     <!-- Exclude sensitive data -->
     <exclude domain="database" path="." />
