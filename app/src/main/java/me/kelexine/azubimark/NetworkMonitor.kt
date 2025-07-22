@@ -50,6 +50,7 @@ class NetworkMonitor private constructor(private val context: Context) {
         POOR,
         NO_CONNECTION,
         UNKNOWN
+        NO_CONNECTION
     }
     
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -46,6 +46,7 @@ object AccessibilityHelper {
                 when (view.javaClass.simpleName) {
                     "FloatingActionButton" -> {
                         info.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK)
+                        info.addAction(AccessibilityNodeInfoCompat.ActionCompat.ACTION_CLICK)
                     }
                     "RecyclerView" -> {
                         info.className = "android.widget.ListView"
@@ -124,6 +125,7 @@ object AccessibilityHelper {
                     val prevView = views[i - 1]
                     nextFocusUpId = prevView.id
                     nextFocusDownId = prevView.id
+                    nextFocusBackwardId = prevView.id
                 }
             }
         }
@@ -219,6 +221,7 @@ object AccessibilityHelper {
                 value / 12.92
             } else {
                 Math.pow((value + 0.055) / 1.055, 2.4)
+                kotlin.math.pow((value + 0.055) / 1.055, 2.4)
             }
         }
         
