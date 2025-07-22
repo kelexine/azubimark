@@ -15,4 +15,21 @@
     <string name="github_profile">GitHub Profile</string>
     <string name="blog_website">Blog Website</string>
     <string name="twitter_profile">Twitter Profile</string>
+    
+    <!-- New strings for enhanced features -->
+    <string name="search_document">Search in document</string>
+    <string name="back_to_top">Back to top</string>
+    <string name="document_outline">Document Outline</string>
+    <string name="jump_to_section">Jump to section</string>
+    <string name="no_headings_found">No headings found in document</string>
+    <string name="search_query_hint">Search text…</string>
+    <string name="search_results">Search Results</string>
+    <string name="no_search_results">No results found</string>
+    <string name="clear_search">Clear search</string>
+    <string name="heading_level">Heading level %1$d</string>
+    <string name="toggle_outline">Toggle document outline</string>
+    <string name="copy_link">Copy link</string>
+    <string name="link_copied">Link copied to clipboard</string>
+    <string name="reading_progress">Reading progress: %1$d%%</string>
+    <string name="search_results_count">%1$d results found</string>
 </resources>

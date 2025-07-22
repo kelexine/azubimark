@@ -10,9 +10,13 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import me.kelexine.azubimark.databinding.ActivityMainBinding
 import java.io.File
 import java.io.IOException
@@ -21,9 +25,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var markdownViewer: MarkdownViewer
     private lateinit var themeManager: ThemeManager
+    private lateinit var documentOutline: DocumentOutline
+    private lateinit var searchManager: SearchManager
+    private lateinit var drawerToggle: ActionBarDrawerToggle
     
     // Add this to store current markdown content
     private var currentMarkdownContent: String? = null
+    private var currentFileName: String? = null
     
     private val openDocumentLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocument()
@@ -32,8 +40,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 contentResolver.openInputStream(uri)?.use { inputStream ->
                     val content = inputStream.bufferedReader().use { it.readText() }
-                    markdownViewer.setMarkdownContent(content)
-                    currentMarkdownContent = content // Store the content
+                    loadMarkdownContent(content, uri.lastPathSegment ?: "Document")
                 }
             } catch (e: IOException) {
                 Toast.makeText(this, "Failed to open file: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -58,20 +65,19 @@ class MainActivity : AppCompatActivity() {
         // Set up toolbar
         setSupportActionBar(binding.toolbar)
         setupEdgeToEdgeDisplay()
-        // Initialize markdown viewer
-        markdownViewer = MarkdownViewer(this, binding.markdownContent)
         
-        // Set up FAB for file browser
-        findViewById<FloatingActionButton>(R.id.fab_browse)?.setOnClickListener {
-            openFileBrowser()
-        }
+        // Initialize components
+        setupComponents()
+        setupNavigationDrawer()
+        setupScrollHandling()
+        setupFABs()
         
         // Restore saved content if available
         if (savedInstanceState != null && savedInstanceState.containsKey("SAVED_MARKDOWN_CONTENT")) {
             val savedContent = savedInstanceState.getString("SAVED_MARKDOWN_CONTENT")
+            val savedFileName = savedInstanceState.getString("SAVED_FILE_NAME") ?: "Document"
             if (savedContent != null) {
-                markdownViewer.setMarkdownContent(savedContent)
-                currentMarkdownContent = savedContent
+                loadMarkdownContent(savedContent, savedFileName)
             }
         } else {
             // Handle intent if app was opened with a file
@@ -82,11 +88,150 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
+    private fun setupComponents() {
+        // Initialize markdown viewer
+        markdownViewer = MarkdownViewer(this, binding.markdownContent)
+        
+        // Initialize document outline
+        documentOutline = DocumentOutline(this, binding.outlineContainer) { heading ->
+            scrollToHeading(heading)
+            binding.drawerLayout.closeDrawers()
+        }
+        
+        // Initialize search manager
+        searchManager = SearchManager(this, binding.markdownContent) { query ->
+            // Handle search results
+            updateSearchResults(query)
+        }
+    }
+    
+    private fun setupNavigationDrawer() {
+        drawerToggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.toolbar,
+            R.string.toggle_outline,
+            R.string.toggle_outline
+        )
+        binding.drawerLayout.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+        
+        // Handle navigation view interactions
+        binding.navOutline.setNavigationItemSelectedListener { false }
+    }
+    
+    private fun setupScrollHandling() {
+        binding.markdownScrollView.setOnScrollChangeListener { v, _, scrollY, _, _ ->
+            val scrollView = v as NestedScrollView
+            val contentHeight = scrollView.getChildAt(0).height
+            val viewHeight = scrollView.height
+            val maxScroll = contentHeight - viewHeight
+            
+            if (maxScroll > 0) {
+                val progress = (scrollY.toFloat() / maxScroll * 100).toInt()
+                binding.scrollProgress.progress = progress
+                
+                // Show/hide back to top FAB based on scroll position
+                if (scrollY > 300) {
+                    binding.fabBackToTop.show()
+                } else {
+                    binding.fabBackToTop.hide()
+                }
+                
+                // Update outline highlighting based on scroll position
+                documentOutline.updateActiveSection(scrollY)
+            } else {
+                binding.scrollProgress.progress = 0
+                binding.fabBackToTop.hide()
+            }
+        }
+    }
+    
+    private fun setupFABs() {
+        // Browse files FAB
+        binding.fabBrowse.setOnClickListener {
+            openFileBrowser()
+        }
+        
+        // Search FAB
+        binding.fabSearch.setOnClickListener {
+            searchManager.showSearchDialog()
+        }
+        
+        // Back to top FAB
+        binding.fabBackToTop.setOnClickListener {
+            binding.markdownScrollView.smoothScrollTo(0, 0)
+        }
+    }
+    
+    private fun loadMarkdownContent(content: String, fileName: String) {
+        currentMarkdownContent = content
+        currentFileName = fileName
+        
+        // Set the content to markdown viewer
+        markdownViewer.setMarkdownContent(content)
+        
+        // Update toolbar subtitle
+        supportActionBar?.subtitle = fileName
+        
+        // Generate document outline
+        documentOutline.generateOutline(content)
+        
+        // Reset scroll position and progress
+        binding.markdownScrollView.scrollTo(0, 0)
+        binding.scrollProgress.progress = 0
+        binding.fabBackToTop.hide()
+        
+        // Update search manager with new content
+        searchManager.updateContent(content)
+    }
+    
+    private fun scrollToHeading(heading: DocumentOutline.HeadingItem) {
+        // This is a simplified version - in a real implementation,
+        // you'd need to map headings to their positions in the TextView
+        val searchText = heading.text.trim()
+        val content = binding.markdownContent.text.toString()
+        val index = content.indexOf(searchText)
+        
+        if (index >= 0) {
+            // Calculate approximate scroll position
+            val lines = content.substring(0, index).count { it == '\n' }
+            val lineHeight = binding.markdownContent.lineHeight
+            val scrollY = lines * lineHeight
+            
+            binding.markdownScrollView.smoothScrollTo(0, scrollY)
+        }
+    }
+    
+    private fun updateSearchResults(query: String) {
+        if (query.isEmpty()) return
+        
+        val content = binding.markdownContent.text.toString()
+        val index = content.indexOf(query, ignoreCase = true)
+        
+        if (index >= 0) {
+            // Calculate scroll position for search result
+            val lines = content.substring(0, index).count { it == '\n' }
+            val lineHeight = binding.markdownContent.lineHeight
+            val scrollY = lines * lineHeight
+            
+            binding.markdownScrollView.smoothScrollTo(0, scrollY)
+            
+            // Highlight the found text (this would need more sophisticated implementation)
+            Toast.makeText(this, "Found: $query", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, getString(R.string.no_search_results), Toast.LENGTH_SHORT).show()
+        }
+    }
+    
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // Save the current markdown content
         currentMarkdownContent?.let {
             outState.putString("SAVED_MARKDOWN_CONTENT", it)
+        }
+        currentFileName?.let {
+            outState.putString("SAVED_FILE_NAME", it)
         }
     }
     
@@ -100,12 +245,10 @@ class MainActivity : AppCompatActivity() {
     private fun checkForMarkdownContent() {
         try {
             val markdownContent = intent.getStringExtra("MARKDOWN_CONTENT")
-            val fileName = intent.getStringExtra("FILE_NAME")
+            val fileName = intent.getStringExtra("FILE_NAME") ?: "Document"
             
             if (markdownContent != null) {
-                markdownViewer.setMarkdownContent(markdownContent)
-                currentMarkdownContent = markdownContent // Store the content
-                supportActionBar?.subtitle = fileName
+                loadMarkdownContent(markdownContent, fileName)
             }
         } catch (e: Exception) {
             Toast.makeText(this, "Error loading markdown: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -113,29 +256,29 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupEdgeToEdgeDisplay() {
-    // Enable edge-to-edge display
-    WindowCompat.setDecorFitsSystemWindows(window, false)
-    
-    // Handle insets for toolbar
-    ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
-        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        // Enable edge-to-edge display
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         
-        // Apply padding to the toolbar to avoid overlap with status bar
-        view.setPadding(
-            view.paddingLeft,
-            insets.top, // This ensures content starts below status bar
-            view.paddingRight,
-            view.paddingBottom
-        )
+        // Handle insets for toolbar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Apply padding to the toolbar to avoid overlap with status bar
+            view.setPadding(
+                view.paddingLeft,
+                insets.top, // This ensures content starts below status bar
+                view.paddingRight,
+                view.paddingBottom
+            )
+            
+            WindowInsetsCompat.CONSUMED
+        }
         
-        WindowInsetsCompat.CONSUMED
+        // Fix the status bar icon colors based on background
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = ThemeUtils.shouldUseLightStatusBar(this@MainActivity)
+        }
     }
-    
-    // Fix the status bar icon colors based on background
-    WindowInsetsControllerCompat(window, window.decorView).apply {
-        isAppearanceLightStatusBars = ThemeUtils.shouldUseLightStatusBar(this@MainActivity)
-    }
-}
     
     private fun handleIntent(intent: Intent) {
         try {
@@ -145,8 +288,8 @@ class MainActivity : AppCompatActivity() {
                         try {
                             contentResolver.openInputStream(uri)?.use { inputStream ->
                                 val content = inputStream.bufferedReader().use { it.readText() }
-                                markdownViewer.setMarkdownContent(content)
-                                currentMarkdownContent = content // Store the content
+                                val fileName = uri.lastPathSegment ?: "Document"
+                                loadMarkdownContent(content, fileName)
                             }
                         } catch (e: IOException) {
                             Toast.makeText(this, "Failed to open file: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -175,6 +318,14 @@ class MainActivity : AppCompatActivity() {
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_outline -> {
+                if (binding.drawerLayout.isDrawerOpen(binding.navOutline)) {
+                    binding.drawerLayout.closeDrawer(binding.navOutline)
+                } else {
+                    binding.drawerLayout.openDrawer(binding.navOutline)
+                }
+                true
+            }
             R.id.action_theme -> {
                 showThemeChooser()
                 true
@@ -201,5 +352,15 @@ class MainActivity : AppCompatActivity() {
                 recreate()
             }
             .show()
+    }
+    
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        drawerToggle.syncState()
+    }
+    
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        drawerToggle.onConfigurationChanged(newConfig)
     }
 }
