@@ -142,7 +142,7 @@ class CacheManager private constructor(private val context: Context) {
     fun preloadContent(filePaths: List<String>) {
         CoroutineScope(Dispatchers.IO).launch {
             filePaths.forEach { filePath ->
-                if (!contentCache.get(filePath)?.let { true } == true) {
+                if (contentCache.get(filePath) == null) {
                     try {
                         val file = File(filePath)
                         if (file.exists() && file.canRead() && file.length() < MAX_CONTENT_SIZE) {

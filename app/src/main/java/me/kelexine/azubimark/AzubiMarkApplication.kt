@@ -289,6 +289,6 @@ class AzubiMarkApplication : Application() {
      * Check if this is a debug build
      */
     fun isDebugBuild(): Boolean {
-        return BuildConfig.DEBUG
+        return me.kelexine.azubimark.BuildConfig.DEBUG
     }
 }

@@ -23,8 +23,8 @@
             app:title="@string/font_size"
             app:summary="@string/font_size_summary"
             app:defaultValue="17"
-            app:min="12"
-            app:max="24"
+            android:min="12"
+            android:max="24"
             app:showSeekBarValue="true"
             app:icon="@drawable/ic_text_size" />
 
@@ -33,8 +33,8 @@
             app:title="@string/line_spacing"
             app:summary="@string/line_spacing_summary"
             app:defaultValue="18"
-            app:min="10"
-            app:max="30"
+            android:min="10"
+            android:max="30"
             app:showSeekBarValue="true"
             app:icon="@drawable/ic_line_spacing" />
 

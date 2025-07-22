@@ -161,7 +161,7 @@ object PerformanceMonitor {
      */
     private fun isPerformanceMonitoringEnabled(): Boolean {
         // Enable in debug builds or when debug mode is enabled in settings
-        return BuildConfig.DEBUG || isDebugModeEnabled()
+        return me.kelexine.azubimark.BuildConfig.DEBUG || isDebugModeEnabled()
     }
     
     /**
@@ -195,13 +195,13 @@ object PerformanceMonitor {
             stats["totalMemoryUsed"] = performanceMetrics.sumOf { it.memoryUsed }
             
             // Per-operation stats
-            val operationStats = operations.mapValues { (_, metrics) ->
+            val operationStats: Map<String, Map<String, Any>> = operations.mapValues { (_, metrics) ->
                 mapOf(
-                    "count" to metrics.size,
-                    "averageDuration" to metrics.map { it.duration }.average(),
-                    "maxDuration" to metrics.maxOfOrNull { it.duration } ?: 0,
-                    "minDuration" to metrics.minOfOrNull { it.duration } ?: 0,
-                    "totalMemoryUsed" to metrics.sumOf { it.memoryUsed }
+                    "count" to metrics.size as Any,
+                    "averageDuration" to metrics.map { it.duration }.average() as Any,
+                    "maxDuration" to (metrics.maxOfOrNull { it.duration } ?: 0L) as Any,
+                    "minDuration" to (metrics.minOfOrNull { it.duration } ?: 0L) as Any,
+                    "totalMemoryUsed" to metrics.sumOf { it.memoryUsed } as Any
                 )
             }
             
