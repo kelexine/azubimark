@@ -42,7 +42,7 @@ class MarkdownViewer(
     private val context: Context,
     private val textView: TextView
 ) {
-    private val themeManager = ThemeManager(context)
+    private val themeManager = EnhancedThemeManager(context)
     private val prism4j = Prism4j(Prism4jGrammarLocatorDef())
 
     private val markwon = Markwon.builder(context)

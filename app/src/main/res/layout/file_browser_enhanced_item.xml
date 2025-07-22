@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/spacing_xs"
+    android:layout_marginVertical="@dimen/spacing_xs"
+    app:cardCornerRadius="@dimen/corner_radius_medium"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:strokeWidth="1dp"
+    app:strokeColor="?attr/colorOutlineVariant"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_md"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/file_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="@dimen/spacing_md"
+            android:contentDescription="@string/file_icon"
+            android:scaleType="centerInside"
+            tools:src="@drawable/ic_markdown"
+            tools:tint="@color/markdown_color" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/file_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="normal"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tools:text="README.md" />
+
+            <TextView
+                android:id="@+id/file_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="1.2 KB • Oct 15, 2023" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/more_options"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="@string/more_options"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:tint="?attr/colorOnSurfaceVariant"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -24,7 +24,7 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var markdownViewer: MarkdownViewer
-    private lateinit var themeManager: ThemeManager
+    private lateinit var themeManager: EnhancedThemeManager
     private lateinit var documentOutline: DocumentOutline
     private lateinit var searchManager: SearchManager
     private lateinit var drawerToggle: ActionBarDrawerToggle
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         // Initialize theme manager
-        themeManager = ThemeManager(this)
+        themeManager = EnhancedThemeManager(this)
         themeManager.applyTheme()
         
         // Set up edge-to-edge display
@@ -304,7 +304,7 @@ class MainActivity : AppCompatActivity() {
     
     private fun openFileBrowser() {
         try {
-            val intent = Intent(this, FileBrowser::class.java)
+            val intent = Intent(this, EnhancedFileBrowser::class.java)
             startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(this, "Error opening file browser: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -324,6 +324,10 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     binding.drawerLayout.openDrawer(binding.navOutline)
                 }
+                true
+            }
+            R.id.action_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
             R.id.action_theme -> {
