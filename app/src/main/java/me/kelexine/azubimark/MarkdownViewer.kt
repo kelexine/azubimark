@@ -83,7 +83,7 @@ class MarkdownViewer(
         object : AbstractMarkwonPlugin() {
             override fun configureSpansFactory(builder: MarkwonSpansFactory.Builder) {
                 builder.setFactory(Heading::class.java) { _, props ->
-                    val level = RenderProps.HEADING_LEVEL.require(props)
+                    val level = io.noties.markwon.core.CoreProps.HEADING_LEVEL.require(props)
                     createHeadingSpans(level)
                 }
                 

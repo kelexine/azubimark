@@ -519,7 +519,7 @@ class EnhancedFileBrowser : AppCompatActivity() {
     
     private fun showFileProperties(file: File) {
         val size = if (file.isFile) getString(R.string.file_size, Formatter.formatFileSize(this, file.length())) else "Directory"
-        val modified = getString(R.string.file_modified, DateFormat.getDateTimeInstance().format(Date(file.lastModified())))
+                    val modified = getString(R.string.file_modified, java.text.DateFormat.getDateTimeInstance().format(Date(file.lastModified())))
         val path = "Path: ${file.absolutePath}"
         
         val details = "$size\n$modified\n$path"

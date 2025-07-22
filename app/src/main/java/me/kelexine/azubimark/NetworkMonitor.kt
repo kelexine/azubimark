@@ -48,6 +48,8 @@ class NetworkMonitor private constructor(private val context: Context) {
         GOOD,
         FAIR,
         POOR,
+        NO_CONNECTION,
+        UNKNOWN
         NO_CONNECTION
     }
     

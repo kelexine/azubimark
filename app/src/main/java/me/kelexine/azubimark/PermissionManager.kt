@@ -67,6 +67,7 @@ class PermissionManager(
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13+ uses granular media permissions
             arrayOf(
+                "android.permission.READ_MEDIA_DOCUMENTS",
                 Manifest.permission.READ_MEDIA_DOCUMENTS,
                 Manifest.permission.READ_EXTERNAL_STORAGE // Still needed for some cases
             )
@@ -181,6 +182,7 @@ class PermissionManager(
         fun hasStoragePermissions(context: Context): Boolean {
             val requiredPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arrayOf(
+                    "android.permission.READ_MEDIA_DOCUMENTS",
                     Manifest.permission.READ_MEDIA_DOCUMENTS,
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 )
