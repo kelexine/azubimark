@@ -2,15 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_outline"
+        android:icon="@drawable/ic_outline"
+        android:title="@string/toggle_outline"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_open"
         android:icon="@drawable/ic_open"
         android:title="@string/open_file"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_theme"
         android:icon="@drawable/ic_theme"
         android:title="@string/theme"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_about"
         android:title="@string/about"

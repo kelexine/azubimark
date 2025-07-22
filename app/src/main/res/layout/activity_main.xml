@@ -9,72 +9,177 @@
     android:fitsSystemWindows="false"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <!-- Navigation Drawer Layout -->
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        app:liftOnScroll="true">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!-- Main Content -->
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorSurface"
-            android:elevation="0dp"
-            app:title="@string/app_name"
-            app:titleTextAppearance="?attr/textAppearanceHeadlineSmall"
-            app:popupTheme="@style/ThemeOverlay.Material3.Light" />
+            android:layout_height="match_parent">
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="88dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="1dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:strokeWidth="1dp"
-            app:strokeColor="?attr/colorOutlineVariant">
-
-            <TextView
-                android:id="@+id/markdown_content"
+            <!-- App Bar with improved styling -->
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="24dp"
-                android:textIsSelectable="true"
-                android:lineSpacingMultiplier="1.6"
-                android:textSize="16sp"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="?attr/colorOnSurface"
-                android:text="@string/welcome_message"
-                tools:text="Welcome to AzubiMark! Open a markdown file to get started." />
+                android:fitsSystemWindows="true"
+                app:liftOnScroll="true"
+                app:elevation="4dp">
 
-        </com.google.android.material.card.MaterialCardView>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorSurface"
+                    android:elevation="0dp"
+                    app:title="@string/app_name"
+                    app:titleTextAppearance="?attr/textAppearanceHeadlineSmall"
+                    app:popupTheme="@style/ThemeOverlay.Material3.Light" />
 
-    </androidx.core.widget.NestedScrollView>
+                <!-- Progress indicator for scroll position -->
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/scroll_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_gravity="bottom"
+                    android:progress="0"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:trackColor="?attr/colorSurfaceVariant"
+                    style="@style/Widget.Material3.LinearProgressIndicator" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_browse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/browse_files"
-        app:srcCompat="@drawable/ic_browse"
-        app:fabSize="normal"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <!-- Main Content with enhanced layout -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/markdown_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="96dp"
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Enhanced main content card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/content_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="24dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="?attr/colorOutlineVariant">
+
+                        <TextView
+                            android:id="@+id/markdown_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="32dp"
+                            android:textIsSelectable="true"
+                            android:lineSpacingMultiplier="1.8"
+                            android:textSize="17sp"
+                            android:letterSpacing="0.01"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            android:text="@string/welcome_message"
+                            tools:text="Welcome to AzubiMark! Open a markdown file to get started." />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <!-- Search FAB -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="92dp"
+                android:contentDescription="@string/search_document"
+                app:srcCompat="@drawable/ic_search"
+                app:fabSize="normal"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:tint="?attr/colorOnSecondaryContainer" />
+
+            <!-- Browse Files FAB -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_browse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/browse_files"
+                app:srcCompat="@drawable/ic_browse"
+                app:fabSize="normal"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp" />
+
+            <!-- Back to Top FAB -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_back_to_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="92dp"
+                android:contentDescription="@string/back_to_top"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_arrow_upward"
+                app:fabSize="mini"
+                app:elevation="4dp"
+                app:pressedTranslationZ="8dp"
+                app:backgroundTint="?attr/colorTertiaryContainer"
+                app:tint="?attr/colorOnTertiaryContainer" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <!-- Navigation Drawer (Document Outline) -->
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_outline"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/nav_header_outline"
+            app:itemTextAppearance="@style/TextAppearance.AzubiMark.OutlineItem">
+
+            <!-- Dynamic outline content will be populated programmatically -->
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:paddingTop="16dp">
+
+                <LinearLayout
+                    android:id="@+id/outline_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="32dp" />
+
+            </androidx.core.widget.NestedScrollView>
+
+        </com.google.android.material.navigation.NavigationView>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

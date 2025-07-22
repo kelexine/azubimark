@@ -63,6 +63,21 @@
     <color name="md_theme_dark_outlineVariant">#49454F</color>
     <color name="md_theme_dark_scrim">#000000</color>
     
+    <!-- App specific colors -->
     <color name="folder_color">#FFC107</color>
     <color name="markdown_color">#6750A4</color>
+    
+    <!-- Code block colors with improved contrast -->
+    <color name="code_block_background">#F5F5F5</color>
+    <color name="code_block_background_dark">#2B2B2B</color>
+    <color name="code_block_text">#1C1B1F</color>
+    <color name="code_block_text_dark">#E6E1E5</color>
+    
+    <!-- Search highlight colors -->
+    <color name="search_highlight">#FFEB3B</color>
+    <color name="search_highlight_dark">#F57F17</color>
+    
+    <!-- Progress colors -->
+    <color name="progress_background">#E0E0E0</color>
+    <color name="progress_background_dark">#424242</color>
 </resources>
