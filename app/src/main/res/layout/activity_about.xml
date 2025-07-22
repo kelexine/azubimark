@@ -127,7 +127,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:layout_marginEnd="16dp"
-                            android:src="@mipmap/ic_launcher"
+                            android:src="@mipmap/ic_user"
                             android:contentDescription="User Avatar" />
 
                         <LinearLayout
@@ -151,7 +151,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?attr/textAppearanceBodyMedium"
                                 android:textColor="?attr/colorOnSurfaceVariant"
-                                tools:text="@azubiorg" />
+                                tools:text="@kelexine" />
 
                             <TextView
                                 android:id="@+id/user_location"
