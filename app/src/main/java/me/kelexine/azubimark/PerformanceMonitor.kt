@@ -199,8 +199,8 @@ object PerformanceMonitor {
                 mapOf(
                     "count" to metrics.size,
                     "averageDuration" to metrics.map { it.duration }.average(),
-                    "maxDuration" to metrics.maxOfOrNull { it.duration } ?: 0,
-                    "minDuration" to metrics.minOfOrNull { it.duration } ?: 0,
+                    "maxDuration" to (metrics.maxOfOrNull { it.duration } ?: 0),
+                    "minDuration" to (metrics.minOfOrNull { it.duration } ?: 0),
                     "totalMemoryUsed" to metrics.sumOf { it.memoryUsed }
                 )
             }
