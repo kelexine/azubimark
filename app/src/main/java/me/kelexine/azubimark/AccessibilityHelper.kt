@@ -8,6 +8,7 @@ import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.preference.PreferenceManager
+import kotlin.math.pow
 
 /**
  * Helper class to improve accessibility and usability for users with disabilities
@@ -222,7 +223,7 @@ object AccessibilityHelper {
             return if (value <= 0.03928) {
                 value / 12.92
             } else {
-                kotlin.math.pow((value + 0.055) / 1.055, 2.4)
+                (value + 0.055).pow(2.4) / 1.055.pow(2.4)
             }
         }
         
