@@ -43,14 +43,22 @@ class MarkdownViewer(
     private val textView: TextView
 ) {
     private val themeManager = EnhancedThemeManager(context)
-    private val prism4j = Prism4j(Prism4jGrammarLocatorDef())
+    private val prism4j = try {
+        Prism4j(Prism4jGrammarLocatorDef())
+    } catch (e: Exception) {
+        // Fallback if Prism4j fails to initialize
+        null
+    }
 
     private val markwon = Markwon.builder(context)
         .usePlugin(CorePlugin.create())
         .usePlugin(StrikethroughPlugin.create())
         .usePlugin(createEnhancedTablePlugin())
         .usePlugin(TaskListPlugin.create(context))
-        .usePlugin(createSyntaxHighlightPlugin())
+        .apply {
+            // Only add syntax highlighting if Prism4j is available
+            prism4j?.let { usePlugin(createSyntaxHighlightPlugin()) }
+        }
         .usePlugin(createEnhancedTypographyPlugin())
         .usePlugin(createCodeBlockEnhancementPlugin())
         .build()
@@ -69,15 +77,44 @@ class MarkdownViewer(
         return TablePlugin.create(tableTheme)
     }
 
-    private fun createSyntaxHighlightPlugin(): SyntaxHighlightPlugin =
-        SyntaxHighlightPlugin.create(
-            prism4j,
-            when (themeManager.getCurrentTheme()) {
-                ThemeManager.THEME_LIGHT -> EnhancedLightSyntaxTheme(context)
-                ThemeManager.THEME_DARK  -> EnhancedDarkSyntaxTheme(context)
-                else                    -> MaterialYouSyntaxTheme(context)
+    private fun createSyntaxHighlightPlugin(): SyntaxHighlightPlugin {
+        val prism4jInstance = prism4j ?: throw IllegalStateException("Prism4j not available")
+        val theme = when (themeManager.getCurrentTheme()) {
+            ThemeManager.THEME_LIGHT -> Prism4jThemeDefault.create()
+            ThemeManager.THEME_DARK  -> Prism4jThemeDarkula.create()
+            else                    -> createMaterialYouSafeTheme()
+        }
+        return SyntaxHighlightPlugin.create(prism4jInstance, theme)
+    }
+    
+    private fun createMaterialYouSafeTheme(): Prism4jTheme {
+        return object : Prism4jTheme {
+            override fun background(): Int = ThemeUtils.getMaterialYouColor(context, 
+                com.google.android.material.R.attr.colorSurfaceVariant)
+            
+            override fun textColor(): Int = ThemeUtils.getMaterialYouColor(context, 
+                com.google.android.material.R.attr.colorOnSurface)
+            
+            override fun apply(language: String, syntax: Syntax, builder: SpannableStringBuilder, start: Int, end: Int) {
+                // Use safe, well-tested color application
+                val colorPrimary = ThemeUtils.getMaterialYouColor(context, 
+                    com.google.android.material.R.attr.colorPrimary)
+                val colorSecondary = ThemeUtils.getMaterialYouColor(context, 
+                    com.google.android.material.R.attr.colorSecondary)
+                val colorOnSurface = ThemeUtils.getMaterialYouColor(context, 
+                    com.google.android.material.R.attr.colorOnSurface)
+                
+                val spanColor = when (syntax.type()) {
+                    "keyword", "class-name" -> colorPrimary
+                    "string", "attr-value" -> colorSecondary
+                    "comment" -> ThemeUtils.adjustAlpha(colorOnSurface, 0.6f)
+                    else -> colorOnSurface
+                }
+                
+                builder.setSpan(ForegroundColorSpan(spanColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-        )
+        }
+    }
 
     private fun createEnhancedTypographyPlugin(): AbstractMarkwonPlugin =
         object : AbstractMarkwonPlugin() {
@@ -166,6 +203,9 @@ class MarkdownViewer(
     }
 
     fun setMarkdownContent(markdownText: String) {
+        // Configure TextView for optimal markdown rendering
+        configureTextView()
+        
         markwon.setMarkdown(textView, markdownText)
         
         // Add long click listener for code copying functionality
@@ -177,6 +217,26 @@ class MarkdownViewer(
             } else {
                 false
             }
+        }
+    }
+    
+    private fun configureTextView() {
+        // Ensure proper text configuration for markdown rendering
+        textView.apply {
+            setTextIsSelectable(true)
+            movementMethod = android.text.method.LinkMovementMethod.getInstance()
+            setLineSpacing(0f, 1.2f) // Improve line spacing for readability
+            
+            // Prevent text cutoff issues
+            setPadding(
+                context.resources.getDimensionPixelSize(R.dimen.spacing_md),
+                context.resources.getDimensionPixelSize(R.dimen.spacing_md),
+                context.resources.getDimensionPixelSize(R.dimen.spacing_md),
+                context.resources.getDimensionPixelSize(R.dimen.spacing_md)
+            )
+            
+            // Handle potential rendering issues
+            setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null)
         }
     }
     

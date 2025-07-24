@@ -20,34 +20,64 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- App Bar with improved styling -->
+            <!-- Enhanced App Bar with Material Design 3 -->
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 app:liftOnScroll="true"
-                app:elevation="4dp">
+                app:elevation="@dimen/elevation_app_bar"
+                style="@style/Widget.Material3.AppBarLayout">
 
-                <androidx.appcompat.widget.Toolbar
+                <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorSurface"
-                    android:elevation="0dp"
+                    android:minHeight="?attr/actionBarSize"
                     app:title="@string/app_name"
-                    app:titleTextAppearance="?attr/textAppearanceHeadlineSmall"
-                    app:popupTheme="@style/ThemeOverlay.Material3.Light" />
+                    app:titleTextAppearance="@style/TextAppearance.AzubiMark.Toolbar.Title"
+                    app:titleTextColor="?attr/colorOnSurface"
+                    app:subtitleTextAppearance="@style/TextAppearance.AzubiMark.Toolbar.Subtitle"
+                    app:subtitleTextColor="?attr/colorOnSurfaceVariant"
+                    app:popupTheme="@style/ThemeOverlay.Material3.Toolbar"
+                    app:menu="@menu/toolbar_menu"
+                    app:navigationIcon="@drawable/ic_menu"
+                    app:navigationContentDescription="@string/navigation_menu"
+                    app:contentInsetStartWithNavigation="0dp"
+                    style="@style/Widget.Material3.Toolbar">
 
-                <!-- Progress indicator for scroll position -->
+                    <!-- Search View integrated into toolbar -->
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/search_view"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="gone"
+                        app:iconifiedByDefault="false"
+                        app:queryHint="@string/search_document_hint"
+                        app:searchIcon="@drawable/ic_search"
+                        app:closeIcon="@drawable/ic_close"
+                        app:submitBackground="@android:color/transparent"
+                        app:queryBackground="@android:color/transparent"
+                        style="@style/Widget.AzubiMark.SearchView" />
+
+                </com.google.android.material.appbar.MaterialToolbar>
+
+                <!-- Enhanced Progress indicator -->
                 <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/scroll_progress"
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_gravity="bottom"
+                    android:layout_height="4dp"
                     android:progress="0"
+                    android:visibility="visible"
                     app:indicatorColor="?attr/colorPrimary"
                     app:trackColor="?attr/colorSurfaceVariant"
+                    app:trackThickness="4dp"
+                    app:indicatorDirectionLinear="leftToRight"
                     style="@style/Widget.Material3.LinearProgressIndicator" />
 
             </com.google.android.material.appbar.AppBarLayout>
@@ -102,22 +132,6 @@
 
             </androidx.core.widget.NestedScrollView>
 
-            <!-- Search FAB -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="92dp"
-                android:contentDescription="@string/search_document"
-                app:srcCompat="@drawable/ic_search"
-                app:fabSize="normal"
-                app:elevation="6dp"
-                app:pressedTranslationZ="12dp"
-                app:backgroundTint="?attr/colorSecondaryContainer"
-                app:tint="?attr/colorOnSecondaryContainer" />
-
             <!-- Browse Files FAB -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_browse"
@@ -151,32 +165,134 @@
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <!-- Navigation Drawer (Document Outline) -->
+        <!-- Enhanced Navigation Drawer (Table of Contents) -->
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_outline"
-            android:layout_width="320dp"
+            android:layout_width="360dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:headerLayout="@layout/nav_header_outline"
-            app:itemTextAppearance="@style/TextAppearance.AzubiMark.OutlineItem">
+            android:background="?attr/colorSurface"
+            app:itemTextAppearance="@style/TextAppearance.AzubiMark.OutlineItem"
+            app:itemIconTint="?attr/colorOnSurfaceVariant"
+            app:itemTextColor="?attr/colorOnSurface"
+            app:itemShapeFillColor="@color/outline_item_selector"
+            app:elevation="@dimen/elevation_navigation_drawer"
+            style="@style/Widget.AzubiMark.NavigationView">
 
-            <!-- Dynamic outline content will be populated programmatically -->
-            <androidx.core.widget.NestedScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="?attr/actionBarSize"
-                android:paddingTop="16dp">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/outline_container"
+                <!-- Table of Contents Header -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="16dp"
-                    android:paddingBottom="32dp" />
+                    android:layout_margin="@dimen/spacing_md"
+                    app:cardCornerRadius="@dimen/corner_radius_medium"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:cardBackgroundColor="?attr/colorSurfaceVariant">
 
-            </androidx.core.widget.NestedScrollView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/spacing_md"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_outline"
+                            android:contentDescription="@string/table_of_contents"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:text="@string/table_of_contents"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_collapse_all"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:minWidth="0dp"
+                            android:minHeight="0dp"
+                            android:padding="4dp"
+                            android:text="@string/collapse_all"
+                            android:textSize="12sp"
+                            app:icon="@drawable/ic_arrow_down"
+                            app:iconSize="16dp"
+                            app:iconPadding="4dp"
+                            style="@style/Widget.Material3.Button.TextButton" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Enhanced Table of Contents with RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/outline_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/spacing_sm"
+                    android:paddingBottom="@dimen/spacing_xl"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical"
+                    android:fadeScrollbars="true" />
+
+                <!-- Quick Navigation Footer -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_md"
+                    app:cardCornerRadius="@dimen/corner_radius_medium"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:cardBackgroundColor="?attr/colorSurfaceVariant">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/spacing_sm">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_go_to_top"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="@dimen/spacing_xs"
+                            android:text="@string/go_to_top"
+                            app:icon="@drawable/ic_arrow_upward"
+                            app:iconSize="18dp"
+                            style="@style/Widget.Material3.Button.TextButton" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_go_to_bottom"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/spacing_xs"
+                            android:text="@string/go_to_bottom"
+                            app:icon="@drawable/ic_arrow_down"
+                            app:iconSize="18dp"
+                            style="@style/Widget.Material3.Button.TextButton" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
 
         </com.google.android.material.navigation.NavigationView>
 
