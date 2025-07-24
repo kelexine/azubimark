@@ -148,8 +148,6 @@
     <string name="expand_all">Expand All</string>
     <string name="go_to_top">Go to Top</string>
     <string name="go_to_bottom">Go to Bottom</string>
-    <string name="go_to_bottom">Go to Bottom</string>
-    <string name="reading_mode">Reading Mode</string>
     <string name="export_document">Export Document</string>
     <string name="preferences">Preferences</string>
     <string name="theme_settings">Theme Settings</string>
@@ -157,24 +155,17 @@
     <string name="toolbar_overflow">More options</string>
     
     <!-- Toolbar and Search -->
-    <string name="search_document">Search document</string>
     <string name="close_search">Close search</string>
-    <string name="clear_search">Clear search</string>
-    <string name="search_results">Search results</string>
-    <string name="no_search_results">No results found</string>
     
     <!-- Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="jump_to_section">Jump to section</string>
-    <string name="document_outline">Document Outline</string>
     
     <!-- Content descriptions -->
     <string name="search_icon">Search</string>
     <string name="menu_icon">Menu</string>
     <string name="close_icon">Close</string>
     <string name="outline_icon">Outline</string>
-    <string name="heading_level">Heading level</string>
     <string name="current_section">Current section</string>
     <string name="heading_level_content_description">Heading level %1$d: %2$s</string>
     
