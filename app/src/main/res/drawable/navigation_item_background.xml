@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorPrimary">
+    
+    <item android:id="@android:id/background">
+        <selector>
+            <item android:state_checked="true">
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/colorPrimaryContainer" />
+                    <corners android:radius="@dimen/corner_radius_large" />
+                </shape>
+            </item>
+            <item android:state_pressed="true">
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/colorSecondaryContainer" />
+                    <corners android:radius="@dimen/corner_radius_large" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@android:color/transparent" />
+                    <corners android:radius="@dimen/corner_radius_large" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+    
+</ripple>

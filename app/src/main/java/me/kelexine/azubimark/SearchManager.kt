@@ -25,6 +25,22 @@ class SearchManager(
         currentSearchQuery = ""
     }
     
+    fun performSearch(query: String) {
+        currentSearchQuery = query
+        if (query.isNotEmpty() && currentContent.isNotEmpty()) {
+            // Perform the actual search and highlight results
+            searchInContent(query)
+            onSearchResult(query)
+        }
+    }
+    
+    fun clearSearch() {
+        currentSearchQuery = ""
+        // Clear any highlights in the content
+        // This would typically involve removing spans from the TextView
+        onSearchResult("")
+    }
+    
     fun showSearchDialog() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_search, null)
         val searchInputLayout = dialogView.findViewById<TextInputLayout>(R.id.search_input_layout)

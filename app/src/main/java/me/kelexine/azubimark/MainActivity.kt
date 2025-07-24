@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import androidx.appcompat.widget.SearchView
 import me.kelexine.azubimark.databinding.ActivityMainBinding
 import java.io.File
 import java.io.IOException
@@ -69,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         // Initialize components
         setupComponents()
         setupNavigationDrawer()
+        setupNavigationDrawerActions()
         setupScrollHandling()
         setupFABs()
         
@@ -160,15 +162,44 @@ class MainActivity : AppCompatActivity() {
             openFileBrowser()
         }
         
-        // Search FAB
-        binding.fabSearch.setOnClickListener {
-            searchManager.showSearchDialog()
-        }
-        
         // Back to top FAB
         binding.fabBackToTop.setOnClickListener {
             binding.markdownScrollView.smoothScrollTo(0, 0)
         }
+    }
+    
+    private fun setupNavigationDrawerActions() {
+        // Set up navigation drawer toggle
+        binding.toolbar.setNavigationOnClickListener {
+            if (binding.drawerLayout.isDrawerOpen(binding.navOutline)) {
+                binding.drawerLayout.closeDrawer(binding.navOutline)
+            } else {
+                binding.drawerLayout.openDrawer(binding.navOutline)
+            }
+        }
+        
+        // Setup outline action buttons (these will be handled in the outline implementation)
+        setupOutlineActions()
+    }
+    
+    private fun setupOutlineActions() {
+        // These buttons are in the new navigation drawer layout
+        // Implementation will be added when RecyclerView adapter is created
+    }
+    
+    private fun toggleReadingMode() {
+        // Toggle reading mode implementation
+        Toast.makeText(this, "Reading mode toggle - to be implemented", Toast.LENGTH_SHORT).show()
+    }
+    
+    private fun exportDocument() {
+        // Export document implementation
+        Toast.makeText(this, "Export feature - to be implemented", Toast.LENGTH_SHORT).show()
+    }
+    
+    private fun showTextSizeDialog() {
+        // Text size dialog implementation
+        Toast.makeText(this, "Text size settings - to be implemented", Toast.LENGTH_SHORT).show()
     }
     
     private fun loadMarkdownContent(content: String, fileName: String) {
@@ -368,18 +399,66 @@ class MainActivity : AppCompatActivity() {
     }
     
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        
+        // Set up the SearchView
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as? SearchView
+        
+        searchView?.apply {
+            queryHint = getString(R.string.search_document_hint)
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    query?.let { 
+                        searchManager.performSearch(it)
+                        clearFocus()
+                    }
+                    return true
+                }
+                
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText.isNullOrEmpty()) {
+                        searchManager.clearSearch()
+                    } else if (newText.length > 2) {
+                        searchManager.performSearch(newText)
+                    }
+                    return true
+                }
+            })
+            
+            setOnCloseListener {
+                searchManager.clearSearch()
+                false
+            }
+            
+            // Configure search view appearance
+            maxWidth = Integer.MAX_VALUE
+            isIconifiedByDefault = true
+        }
+        
         return true
     }
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            android.R.id.home -> {
+                if (binding.drawerLayout.isDrawerOpen(binding.navOutline)) {
+                    binding.drawerLayout.closeDrawer(binding.navOutline)
+                } else {
+                    binding.drawerLayout.openDrawer(binding.navOutline)
+                }
+                true
+            }
             R.id.action_outline -> {
                 if (binding.drawerLayout.isDrawerOpen(binding.navOutline)) {
                     binding.drawerLayout.closeDrawer(binding.navOutline)
                 } else {
                     binding.drawerLayout.openDrawer(binding.navOutline)
                 }
+                true
+            }
+            R.id.action_open -> {
+                openDocumentLauncher.launch(arrayOf("text/markdown", "text/plain"))
                 true
             }
             R.id.action_settings -> {
@@ -390,12 +469,20 @@ class MainActivity : AppCompatActivity() {
                 showThemeChooser()
                 true
             }
-            R.id.action_open -> {
-                openDocumentLauncher.launch(arrayOf("text/markdown", "text/plain"))
-                true
-            }
             R.id.action_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
+                true
+            }
+            R.id.action_reading_mode -> {
+                toggleReadingMode()
+                true
+            }
+            R.id.action_export -> {
+                exportDocument()
+                true
+            }
+            R.id.action_text_size -> {
+                showTextSizeDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)

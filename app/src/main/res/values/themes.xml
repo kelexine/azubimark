@@ -227,4 +227,46 @@
         <item name="trackColor">?attr/colorSurfaceVariant</item>
         <item name="trackThickness">3dp</item>
     </style>
+    
+    <!-- Enhanced Toolbar Styles -->
+    <style name="TextAppearance.AzubiMark.Toolbar.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="TextAppearance.AzubiMark.Toolbar.Subtitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:alpha">0.87</item>
+    </style>
+    
+    <!-- Enhanced SearchView Style -->
+    <style name="Widget.AzubiMark.SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:background">@drawable/search_view_background</item>
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="submitBackground">@android:color/transparent</item>
+        <item name="searchIcon">@drawable/ic_search</item>
+        <item name="closeIcon">@drawable/ic_close</item>
+        <item name="android:imeOptions">actionSearch</item>
+        <item name="android:inputType">text</item>
+    </style>
+    
+    <!-- Navigation View Style -->
+    <style name="Widget.AzubiMark.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="itemBackground">@drawable/navigation_item_background</item>
+        <item name="itemTextColor">?attr/colorOnSurface</item>
+        <item name="itemIconTint">?attr/colorOnSurfaceVariant</item>
+        <item name="itemShapeFillColor">?attr/colorPrimaryContainer</item>
+        <item name="itemShapeInsetStart">@dimen/spacing_sm</item>
+        <item name="itemShapeInsetEnd">@dimen/spacing_sm</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+    
 </resources>
