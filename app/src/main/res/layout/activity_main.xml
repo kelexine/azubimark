@@ -41,7 +41,7 @@
                     app:titleTextColor="?attr/colorOnSurface"
                     app:subtitleTextAppearance="@style/TextAppearance.AzubiMark.Toolbar.Subtitle"
                     app:subtitleTextColor="?attr/colorOnSurfaceVariant"
-                    app:popupTheme="@style/ThemeOverlay.Material3.Toolbar"
+                    app:popupTheme="@style/ThemeOverlay.Material3.Light"
                     app:menu="@menu/toolbar_menu"
                     app:navigationIcon="@drawable/ic_menu"
                     app:navigationContentDescription="@string/navigation_menu"
@@ -237,9 +237,8 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Enhanced Table of Contents with RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/outline_recycler_view"
+                <!-- Enhanced Table of Contents -->
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -247,7 +246,15 @@
                     android:paddingBottom="@dimen/spacing_xl"
                     android:clipToPadding="false"
                     android:scrollbars="vertical"
-                    android:fadeScrollbars="true" />
+                    android:fadeScrollbars="true">
+
+                    <LinearLayout
+                        android:id="@+id/outline_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </androidx.core.widget.NestedScrollView>
 
                 <!-- Quick Navigation Footer -->
                 <com.google.android.material.card.MaterialCardView

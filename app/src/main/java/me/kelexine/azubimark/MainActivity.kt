@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         markdownViewer = MarkdownViewer(this, binding.markdownContent)
         
         // Initialize document outline
-        documentOutline = DocumentOutline(this, binding.outlineContainer) { heading ->
+        documentOutline = DocumentOutline(this, binding.outlineRecyclerView) { heading ->
             scrollToHeading(heading)
             binding.drawerLayout.closeDrawers()
         }
@@ -433,7 +433,6 @@ class MainActivity : AppCompatActivity() {
             
             // Configure search view appearance
             maxWidth = Integer.MAX_VALUE
-            isIconifiedByDefault = true
         }
         
         return true
