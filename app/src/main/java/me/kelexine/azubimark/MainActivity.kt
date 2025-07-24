@@ -433,10 +433,6 @@ class MainActivity : AppCompatActivity() {
             
             // Configure search view appearance
             maxWidth = Integer.MAX_VALUE
-<<<<<<< HEAD
-            isIconifiedByDefault = true
-=======
->>>>>>> cursor/fix-critical-bugs-and-improve-app-compliance-89ec
         }
         
         return true
