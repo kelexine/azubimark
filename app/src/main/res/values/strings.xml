@@ -148,6 +148,7 @@
     <string name="expand_all">Expand All</string>
     <string name="go_to_top">Go to Top</string>
     <string name="go_to_bottom">Go to Bottom</string>
+    <string name="go_to_bottom">Go to Bottom</string>
     <string name="reading_mode">Reading Mode</string>
     <string name="export_document">Export Document</string>
     <string name="preferences">Preferences</string>

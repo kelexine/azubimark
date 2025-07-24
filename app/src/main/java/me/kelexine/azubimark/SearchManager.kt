@@ -29,7 +29,7 @@ class SearchManager(
         currentSearchQuery = query
         if (query.isNotEmpty() && currentContent.isNotEmpty()) {
             // Perform the actual search and highlight results
-            searchInContent(query)
+            val occurrences = countOccurrences(currentContent, query)
             onSearchResult(query)
         }
     }
@@ -79,21 +79,7 @@ class SearchManager(
         searchEditText.requestFocus()
     }
     
-    private fun performSearch(query: String) {
-        if (query.isEmpty() || currentContent.isEmpty()) return
-        
-        // Count occurrences
-        val occurrences = countOccurrences(currentContent, query)
-        
-        // Update search input layout helper text
-        searchDialog?.findViewById<TextInputLayout>(R.id.search_input_layout)?.let { layout ->
-            layout.helperText = if (occurrences > 0) {
-                context.getString(R.string.search_results_count, occurrences)
-            } else {
-                context.getString(R.string.no_search_results)
-            }
-        }
-    }
+
     
     private fun countOccurrences(text: String, query: String): Int {
         if (query.isEmpty()) return 0
@@ -111,10 +97,7 @@ class SearchManager(
         return count
     }
     
-    private fun clearSearch() {
-        currentSearchQuery = ""
-        // You could implement clearing of any search highlights here
-    }
+
     
     fun searchNext(query: String): Boolean {
         if (query.isEmpty() || currentContent.isEmpty()) return false
