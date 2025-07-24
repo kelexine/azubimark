@@ -103,6 +103,13 @@ class MainActivity : AppCompatActivity() {
             // Handle search results
             updateSearchResults(query)
         }
+        
+        // Optimize TextView for better performance
+        binding.markdownContent.apply {
+            setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null)
+            isHorizontalScrollBarEnabled = false
+            isVerticalScrollBarEnabled = true
+        }
     }
     
     private fun setupNavigationDrawer() {
@@ -242,6 +249,19 @@ class MainActivity : AppCompatActivity() {
         checkForMarkdownContent()
     }
     
+    override fun onDestroy() {
+        // Clear any cached content to prevent memory leaks
+        currentMarkdownContent = null
+        currentFileName = null
+        super.onDestroy()
+    }
+    
+    override fun onLowMemory() {
+        super.onLowMemory()
+        // Clear non-essential caches when memory is low
+        System.gc()
+    }
+    
     private fun checkForMarkdownContent() {
         try {
             val markdownContent = intent.getStringExtra("MARKDOWN_CONTENT")
@@ -288,18 +308,54 @@ class MainActivity : AppCompatActivity() {
                         try {
                             contentResolver.openInputStream(uri)?.use { inputStream ->
                                 val content = inputStream.bufferedReader().use { it.readText() }
-                                val fileName = uri.lastPathSegment ?: "Document"
+                                val fileName = getFileName(uri) ?: "Document"
                                 loadMarkdownContent(content, fileName)
                             }
                         } catch (e: IOException) {
-                            Toast.makeText(this, "Failed to open file: ${e.message}", Toast.LENGTH_SHORT).show()
+                            showErrorDialog("Failed to open file", e.message ?: "Unknown error")
+                        } catch (e: SecurityException) {
+                            showErrorDialog("Permission denied", "Cannot access the selected file")
                         }
+                    } ?: run {
+                        Toast.makeText(this, "No file data received", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                Intent.ACTION_SEND -> {
+                    intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
+                        loadMarkdownContent(text, "Shared Text")
                     }
                 }
             }
         } catch (e: Exception) {
-            Toast.makeText(this, "Error handling intent: ${e.message}", Toast.LENGTH_SHORT).show()
+            showErrorDialog("Error opening file", e.message ?: "An unexpected error occurred")
         }
+    }
+    
+    private fun getFileName(uri: android.net.Uri): String? {
+        return try {
+            when (uri.scheme) {
+                "content" -> {
+                    contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                            if (nameIndex != -1) cursor.getString(nameIndex) else null
+                        } else null
+                    }
+                }
+                "file" -> uri.lastPathSegment
+                else -> uri.lastPathSegment
+            }
+        } catch (e: Exception) {
+            uri.lastPathSegment
+        }
+    }
+    
+    private fun showErrorDialog(title: String, message: String) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
     
     private fun openFileBrowser() {
