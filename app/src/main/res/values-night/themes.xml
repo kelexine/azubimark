@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Base.Theme.AzubiMark" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.AzubiMark" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/md_theme_dark_primary</item>
         <item name="colorOnPrimary">@color/md_theme_dark_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_dark_primaryContainer</item>
@@ -24,19 +24,5 @@
         <item name="colorSurfaceVariant">@color/md_theme_dark_surfaceVariant</item>
         <item name="colorOnSurfaceVariant">@color/md_theme_dark_onSurfaceVariant</item>
         <item name="colorOutline">@color/md_theme_dark_outline</item>
-        <item name="colorOnSurfaceInverse">@color/md_theme_dark_inverseOnSurface</item>
-        <item name="colorSurfaceInverse">@color/md_theme_dark_inverseSurface</item>
-        <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
-        
-        <!-- Typography -->
-        <item name="textAppearanceDisplayLarge">@style/TextAppearance.AzubiMark.DisplayLarge</item>
-        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.AzubiMark.HeadlineSmall</item>
-        <item name="textAppearanceBodyLarge">@style/TextAppearance.AzubiMark.BodyLarge</item>
-        <item name="textAppearanceBodyMedium">@style/TextAppearance.AzubiMark.BodyMedium</item>
-        
-        <!-- Elevation and Shapes -->
-        <item name="elevationOverlayEnabled">true</item>
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AzubiMark.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AzubiMark.MediumComponent</item>
     </style>
 </resources>
