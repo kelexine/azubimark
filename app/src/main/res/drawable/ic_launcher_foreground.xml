@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Document shape with rounded corners -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,24h32l16,16v48c0,4.4 -3.6,8 -8,8H30c-4.4,0 -8,-3.6 -8,-8V32c0,-4.4 3.6,-8 8,-8z"/>
+    
+    <!-- Document fold -->
+    <path
+        android:fillColor="#E8DEF8"
+        android:pathData="M62,24v16h16z"/>
+    
+    <!-- Document shadow/depth -->
+    <path
+        android:fillColor="#D0BCFF"
+        android:fillAlpha="0.3"
+        android:pathData="M30,24h32l16,16v48c0,4.4 -3.6,8 -8,8H30c-4.4,0 -8,-3.6 -8,-8V32c0,-4.4 3.6,-8 8,-8z"
+        android:strokeWidth="2"
+        android:strokeColor="#6750A4"/>
+    
+    <!-- Markdown M symbol - larger and centered -->
+    <path
+        android:fillColor="#6750A4"
+        android:pathData="M34,48v24h6v-15l6,9h3l6,-9v15h6v-24h-6l-7.5,12 -7.5,-12z"/>
+    
+    <!-- Down arrow (markdown indicator) -->
+    <path
+        android:fillColor="#6750A4"
+        android:pathData="M54,78l-8,-8h5v-5h6v5h5z"/>
+</vector>
