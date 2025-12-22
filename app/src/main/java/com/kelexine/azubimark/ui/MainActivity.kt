@@ -171,12 +171,8 @@ class MainActivity : ComponentActivity() {
                                 initialFileContent = pendingFileContent,
                                 initialFileName = pendingFileName,
                                 onOpenFolderPicker = { folderPickerLauncher.launch(null) },
-                                onRequestStoragePermission = {
-                                    requestStoragePermission { isGranted ->
-                                        if (isGranted) {
-                                            // Ideally retry loading file, but ViewModel handles retry
-                                        }
-                                    }
+                                onRequestStoragePermission = { onResult ->
+                                    requestStoragePermission(onResult)
                                 }
                             )
                         }
@@ -423,7 +419,7 @@ fun AzubiMarkApp(
     initialFileContent: String? = null,
     initialFileName: String? = null,
     onOpenFolderPicker: () -> Unit,
-    onRequestStoragePermission: () -> Unit
+    onRequestStoragePermission: (onResult: (Boolean) -> Unit) -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -513,7 +509,13 @@ fun AzubiMarkApp(
                 onNavigateBack = {
                     navController.popBackStack()
                 },
-                onRequestPermission = onRequestStoragePermission
+                onRequestPermission = {
+                    onRequestStoragePermission { isGranted ->
+                        if (isGranted) {
+                            markdownViewerViewModel.retry()
+                        }
+                    }
+                }
             )
         }
 
