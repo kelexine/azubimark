@@ -41,6 +41,10 @@ class MarkdownViewerViewModel(
      */
     private var currentTaskHandler: InteractiveTaskListHandler? = null
 
+    // Track the currently requested file to support retries when load fails
+    private var activeUri: Uri? = null
+    private var activeFileName: String? = null
+
     /**
      * Load a Markdown file from the given URI.
      * 
@@ -48,10 +52,15 @@ class MarkdownViewerViewModel(
      * @param fileName Optional display name for the file
      */
     fun loadFile(uri: Uri, fileName: String? = null) {
+        // Update active file tracking
+        activeUri = uri
+        activeFileName = fileName
+
         // Save current file state before loading new file
         saveCurrentFileState()
 
         viewModelScope.launch {
+            android.util.Log.d("AzubiMarkDebug", "ViewModel loading file: $uri")
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
                 error = null
@@ -63,16 +72,19 @@ class MarkdownViewerViewModel(
 
                 processAndDisplayContent(uri, content, displayName)
             } catch (e: SecurityException) {
+                android.util.Log.e("AzubiMarkDebug", "SecurityException loading file", e)
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = FileError.PermissionDenied(e.message ?: "Permission denied")
                 )
             } catch (e: java.io.FileNotFoundException) {
+                android.util.Log.e("AzubiMarkDebug", "FileNotFoundException loading file", e)
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = FileError.FileNotFound(e.message ?: "File not found")
                 )
             } catch (e: java.io.IOException) {
+                android.util.Log.e("AzubiMarkDebug", "IOException loading file", e)
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = FileError.EncodingError(e.message ?: "Error reading file")
@@ -95,6 +107,10 @@ class MarkdownViewerViewModel(
      * @param fileName Optional display name for the file
      */
     fun loadFileWithContent(uri: Uri, content: String, fileName: String? = null) {
+        // Update active file tracking
+        activeUri = uri
+        activeFileName = fileName
+
         // Save current file state before loading new file
         saveCurrentFileState()
 
@@ -240,8 +256,8 @@ class MarkdownViewerViewModel(
      * Retry loading the current file.
      */
     fun retry() {
-        _uiState.value.currentFile?.let { file ->
-            loadFile(file.uri, file.name)
+        activeUri?.let { uri ->
+            loadFile(uri, activeFileName)
         }
     }
 
@@ -296,6 +312,31 @@ class MarkdownViewerViewModel(
      */
     fun getCachedFileCount(): Int {
         return fileStateCache.size
+    }
+
+    /**
+     * Check if the given URI is currently loaded or in the process of loading.
+     * This helps prevent redundant load calls from the UI when a load is already initiated
+     * (e.g. via loadFileWithContent).
+     */
+    fun isSameFileLoadedOrLoading(uri: Uri): Boolean {
+        // Use string comparison to avoid issues with different encoding of the same URI
+        val activeUriString = activeUri?.toString()
+        val requestedUriString = uri.toString()
+        
+        android.util.Log.d("AzubiMarkDebug", "isSameFileCheck: active=$activeUriString, requested=$requestedUriString")
+        
+        // Check if it matches the active request
+        if (activeUriString == requestedUriString) {
+            val isLoading = _uiState.value.isLoading
+            val currentUriString = _uiState.value.currentFile?.uri?.toString()
+            
+            android.util.Log.d("AzubiMarkDebug", "isSameFileCheck match! isLoading=$isLoading, current=$currentUriString")
+            
+            // It matches what we are trying to load (or have loaded)
+            return isLoading || currentUriString == requestedUriString
+        }
+        return false
     }
 }
 

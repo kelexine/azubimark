@@ -47,11 +47,24 @@ fun HomeScreen(
 ) {
     var showMenu by remember { mutableStateOf(false) }
     
+    // Context for taking persistable permissions
+    val context = androidx.compose.ui.platform.LocalContext.current
+    
     // Document picker launcher
     val documentPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
-        uri?.let { onOpenFile(it) }
+        uri?.let {
+            // Take persistable permission
+            try {
+                val flags = android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                context.contentResolver.takePersistableUriPermission(it, flags)
+            } catch (e: Exception) {
+                // Ignore if permission cannot be persisted (e.g. from some providers)
+            }
+            onOpenFile(it)
+        }
     }
 
     Scaffold(

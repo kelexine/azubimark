@@ -47,7 +47,9 @@ import com.kelexine.azubimark.ui.theme.AzubiMarkTheme
 import com.kelexine.azubimark.ui.viewer.MarkdownViewerScreen
 import com.kelexine.azubimark.ui.viewer.MarkdownViewerViewModel
 import com.kelexine.azubimark.util.EncodingDetector
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.net.URLEncoder
 
@@ -69,16 +71,24 @@ class MainActivity : ComponentActivity() {
     private lateinit var appPreferencesRepository: AppPreferencesRepository
 
     // State for pending file from external intent
-    private var pendingFileUri: Uri? = null
-    private var pendingFileContent: String? = null
-    private var pendingFileName: String? = null
+    private val pendingFileUri = mutableStateOf<Uri?>(null)
+    private val pendingFileContent = mutableStateOf<String?>(null)
+    private val pendingFileName = mutableStateOf<String?>(null)
     
     // Keep splash screen visible while loading
     private var keepSplashScreen = true
     
     // State for permission request
     private var onPermissionResult: ((Boolean) -> Unit)? = null
-    private var waitingForManageStoragePermission = false
+
+    // Permission request launcher for manage storage (API 30+)
+    private val manageStoragePermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            onPermissionResult?.invoke(Environment.isExternalStorageManager())
+        }
+    }
 
     // Permission request launcher for legacy storage permission (API < 30)
     private val requestLegacyPermissionLauncher = registerForActivityResult(
@@ -163,13 +173,13 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         else -> {
-                            AzubiMarkApp(
+                                AzubiMarkApp(
                                 themeManager = themeManager,
                                 fileManager = fileManager,
                                 markwonRenderer = markwonRenderer,
-                                initialFileUri = pendingFileUri,
-                                initialFileContent = pendingFileContent,
-                                initialFileName = pendingFileName,
+                                initialFileUri = pendingFileUri.value,
+                                initialFileContent = pendingFileContent.value,
+                                initialFileName = pendingFileName.value,
                                 onOpenFolderPicker = { folderPickerLauncher.launch(null) },
                                 onRequestStoragePermission = { onResult ->
                                     requestStoragePermission(onResult)
@@ -189,11 +199,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Check if we were waiting for MANAGE_EXTERNAL_STORAGE permission
-        if (waitingForManageStoragePermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            waitingForManageStoragePermission = false
-            onPermissionResult?.invoke(Environment.isExternalStorageManager())
-        }
     }
 
     private fun initializeDependencies() {
@@ -207,36 +212,62 @@ class MainActivity : ComponentActivity() {
     private fun handleIntent(intent: Intent?) {
         intent?.let {
             val uri = fileManager.handleExternalIntent(it)
+            // Reset state first to ensure clean slate if receiving new intent
+            pendingFileUri.value = null
+            pendingFileContent.value = null
+            pendingFileName.value = null
+            
             if (uri != null) {
+                android.util.Log.d("AzubiMarkDebug", "Handling external intent for URI: $uri")
+                android.util.Log.d("AzubiMarkDebug", "Intent flags: ${it.flags}")
+                
                 // Read the file content immediately while we have permission
                 // External intents grant temporary permission that may expire
-                try {
-                    val bytes = contentResolver.openInputStream(uri)?.use { stream ->
-                        stream.readBytes()
+                // Read content in background to avoid Main Thread IO
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        android.util.Log.d("AzubiMarkDebug", "Attempting to open input stream for URI: $uri")
+                        val bytes = contentResolver.openInputStream(uri)?.use { stream ->
+                            stream.readBytes()
+                        }
+                        android.util.Log.d("AzubiMarkDebug", "Read ${bytes?.size} bytes")
+                        
+                        if (bytes != null) {
+                            val content = EncodingDetector.decodeWithFallback(bytes)
+                                ?: EncodingDetector.decodeWithAutoDetect(bytes)
+                            
+                            withContext(Dispatchers.Main) {
+                                pendingFileContent.value = content
+                                pendingFileName.value = uri.lastPathSegment ?: "Markdown File"
+                                pendingFileUri.value = uri
+                                android.util.Log.d("AzubiMarkDebug", "File content cached in MainActivity")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("AzubiMarkDebug", "Error reading file in MainActivity", e)
+                        withContext(Dispatchers.Main) {
+                            // If we can't read immediately, store the URI and try later
+                            // This handles cases where the file is from SAF with persistent permission
+                            pendingFileUri.value = uri
+                            pendingFileContent.value = null
+                            pendingFileName.value = null
+                        }
                     }
-                    if (bytes != null) {
-                        pendingFileContent = EncodingDetector.decodeWithFallback(bytes)
-                            ?: EncodingDetector.decodeWithAutoDetect(bytes)
-                        pendingFileName = uri.lastPathSegment ?: "Markdown File"
-                        pendingFileUri = uri
-                    }
-                } catch (e: Exception) {
-                    // If we can't read immediately, store the URI and try later
-                    // This handles cases where the file is from SAF with persistent permission
-                    pendingFileUri = uri
-                    pendingFileContent = null
-                    pendingFileName = null
-                    
-                    // Try to take persistable permission for SAF URIs
+
+                    // Try to take persistable permission for SAF URIs (always safe to try)
                     try {
                         val flags = it.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION
                         if (flags != 0) {
-                            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            android.util.Log.d("AzubiMarkDebug", "Attempting to take persistable permission")
+                            contentResolver.takePersistableUriPermission(uri, flags)
+                            android.util.Log.d("AzubiMarkDebug", "Persistable permission taken")
                         }
                     } catch (e: SecurityException) {
-                        // Permission might not be persistable, that's okay
+                        android.util.Log.w("AzubiMarkDebug", "Failed to take persistable permission: ${e.message}")
                     }
                 }
+            } else {
+                android.util.Log.w("AzubiMarkDebug", "Intent data was null or not handled")
             }
         }
     }
@@ -258,19 +289,15 @@ class MainActivity : ComponentActivity() {
                 } else {
                     // Request MANAGE_EXTERNAL_STORAGE permission
                     try {
-                        waitingForManageStoragePermission = true
                         val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                         intent.data = Uri.parse("package:$packageName")
-                        startActivity(intent)
-                        // Result will be checked in onResume
+                        manageStoragePermissionLauncher.launch(intent)
                     } catch (e: Exception) {
                         // Fallback to generic all files access settings
                         try {
-                            waitingForManageStoragePermission = true
                             val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-                            startActivity(intent)
+                            manageStoragePermissionLauncher.launch(intent)
                         } catch (e2: Exception) {
-                            waitingForManageStoragePermission = false
                             onResult(false)
                         }
                     }
@@ -497,9 +524,14 @@ fun AzubiMarkApp(
             val parsedUri = Uri.parse(fileUri)
 
             LaunchedEffect(fileUri) {
+                android.util.Log.d("AzubiMarkDebug", "Viewer LaunchedEffect with URI: $fileUri -> parsed: $parsedUri")
                 // Only load if not already loaded (e.g., from external intent with pre-loaded content)
-                if (markdownViewerViewModel.uiState.value.currentFile?.uri != parsedUri) {
+                // and not currently loading the same file
+                if (!markdownViewerViewModel.isSameFileLoadedOrLoading(parsedUri)) {
+                    android.util.Log.d("AzubiMarkDebug", "Triggering loadFile from Viewer LaunchedEffect")
                     markdownViewerViewModel.loadFile(parsedUri)
+                } else {
+                    android.util.Log.d("AzubiMarkDebug", "Skipping redundant loadFile from Viewer LaunchedEffect")
                 }
             }
 
